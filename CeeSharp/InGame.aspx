@@ -2,9 +2,25 @@
 <%@ Import Namespace="CeeSharp" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    
+    <style>
+        .modalBackground {
+            background-color: black;
+            filter: alpha(opacity=90);
+            opacity:0.8;
+        }
+        .modalPopup {
+            background-color: #ffffff;
+            border-width: 3px;
+            border-style: solid;
+            border-color: black;
+            padding-top: 10px;
+            padding-left: 10px;
+            width: 300px;
+            height: 140px;
+        }
+    </style>
     <script runat="server">
-         private const int numStrings = 6;  
+        private const int numStrings = 6;
 
         /// <summary>
         /// Number of frets on the guitar (12, plus open notes), will expand later
@@ -20,6 +36,8 @@
         private Note selected;
         private Note target;
         private int dist;
+        private static int currRound = 1;
+
 
 
         /// <summary>
@@ -40,7 +58,7 @@
             }
 
             // extract the level information and display it at the top of the page
-            Label_title.Text = "<h1>" 
+            Label_title.Text = "<h1>"
                 + Request.QueryString["GameType"].ToString()
                 + ": " + Request.QueryString["Dist"].ToString()
                 + "</h1>";
@@ -56,14 +74,15 @@
             if (!IsPostBack)
             {
                 selected = previous = NotesProvider.F;
-                SetUpTurn();                
+                SetUpTurn();
+                currRound = 1;
             }
             else
             {
                 previous = NotesProvider.GetNoteByName(Label_previous.Text);
                 target = NotesProvider.GetNoteByName(Label_target.Text);
             }
-            
+
         }
 
         /// <summary>
@@ -123,7 +142,7 @@
                         break;
                     default:
                         k = 7;      // index of notes E and e
-                        break;                
+                        break;
                 }
                 for(int j = 0; j < numFrets; j++)
                 {
@@ -155,7 +174,7 @@
         {
             for(int i = 0; i < numStrings; i++)
             {
-                    Table_fretboard.Rows[i].Cells[0].Text = notes[Table_fretboard.Rows[i].Cells[0]].Name;
+                Table_fretboard.Rows[i].Cells[0].Text = notes[Table_fretboard.Rows[i].Cells[0]].Name;
             }
         }
 
@@ -191,40 +210,84 @@
         }
 
         private bool ValidateMove()
-        {  
+        {
             if (target.Name == selected.Name)
                 return true;
             return false;
 
 
         }
+
+        protected void TestBtn_Click(object sender, EventArgs e)
+        {
+            if(currRound < 6)
+            {
+                modalMessage.Text = "You finished round " + currRound++;
+
+            } else
+            {
+                modalMessage.Text = "You finished the level!";
+                OK.Text = "Finish";
+            }
+
+            ModalPopupExtender1.Show();
+
+        }
+
+        protected void OK_Click(object sender, EventArgs e)
+        {
+            ModalPopupExtender1.Hide();
+
+            // Check and add achievements hurr
+            if(currRound > 5)
+                Response.Redirect("~/Game");
+        }
+
     </script>
+    
     <!--
         COMP4952 Project
         Author: Teah Elaschuk
 
         InGame page: Work in progress
         displays the game type and level at the moment
+        Update: Lancelei Herradura  Change: Added updatepanel
     -->
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
             <div class="container text-center">
-        <asp:Label ID="Label_title" runat="server" Text=""></asp:Label>
-        <br />
-        <br />
-        <asp:Table ID="Table_fretboard" class="fretboard" runat="server" >
-        </asp:Table>
-        </div>
-        <br />
-        <br />
-    <div class="container">       
-        <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: "></asp:Label>
-        <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
-        <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
-        <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
-        <br />
-        <asp:Label ID="Label_stat" runat="server" Text=""></asp:Label>
-    </div>
+                <asp:Label ID="Label_title" runat="server" Text=""></asp:Label>
+                <br />
+                <br />
+                <asp:Table ID="Table_fretboard" class="fretboard" runat="server" >
+                </asp:Table>
+                </div>
+                <br />
+                <br />
+                <div class="container">       
+                    <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: " ></asp:Label>
+                    <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
+                    <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
+                    <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
+                    <br />
+                    <asp:Label ID="Label_stat" runat="server" Text=""></asp:Label>
+                    <br />
+                    <asp:Button ID="TestBtn" runat="server" Text="Next Round" OnClick="TestBtn_Click"/>
+                    <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup">
+                        <h4>Congratulations!</h4>
+                        <asp:Label ID="modalMessage" runat="server" Text="You finished this round!"></asp:Label>
+                        <br />
+                        <!-- Test to go to next round -->
+                        <asp:Button ID="OK" runat="server" Text="Go to Next Round" OnClick="OK_Click"   />
+                        <asp:HiddenField ID="hdnField" runat="server" />
+                    </asp:Panel>
+                    <ajaxToolkit:ModalPopupExtender ID="ModalPopupExtender1" runat="server" BackgroundCssClass="modalBackground" PopupControlID="Panel1" TargetControlID="hdnField">
+
+                    </ajaxToolkit:ModalPopupExtender>
+                </div>
+            </div>
+          </div>
+         
         </ContentTemplate>
     </asp:UpdatePanel>
 </asp:Content>
