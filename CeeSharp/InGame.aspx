@@ -283,14 +283,15 @@
         {
             ModalPopupExtender1.Hide();
             stats.Visible = true;
-
-            // Insert this achievement into User data if it's logged in
-            if (Context.User.Identity.GetUserName() != null && Context.User.Identity.IsAuthenticated)
-                UpdateAchievement(sender, e);
-
+            
             // Check and add achievements hurr
             if (currRound.Equals(5))
+            {
+                // Insert this achievement into User data if it's logged in
+                if (Context.User.Identity.GetUserName() != null && Context.User.Identity.IsAuthenticated)
+                    UpdateAchievement(sender, e);
                 Response.Redirect("~/Game");
+            }
             else
                 newGame();
             currRound++;
