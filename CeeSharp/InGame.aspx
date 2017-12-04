@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="InGame.aspx.cs" Inherits="CeeSharp.InGame" %>
+
 <%@ Import Namespace="CeeSharp" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -6,8 +7,9 @@
         .modalBackground {
             background-color: black;
             filter: alpha(opacity=90);
-            opacity:0.8;
+            opacity: 0.8;
         }
+
         .modalPopup {
             background-color: #ffffff;
             border-width: 3px;
@@ -93,7 +95,7 @@
         protected void newGame()
         {
             move = 0;
-            goalStep = rand.Next(7,13);
+            goalStep = rand.Next(7, 13);
             Label_completed.Text = move + " / " + goalStep;
             Label_move.Text = move.ToString();
 
@@ -134,9 +136,9 @@
         {
             notes = new Dictionary<TableCell, Note>();
             int k;
-            for(int i = 0; i < numStrings; i++)
+            for (int i = 0; i < numStrings; i++)
             {
-                switch(i)
+                switch (i)
                 {
                     case 1:
                         k = 2;      // index of note B
@@ -154,7 +156,7 @@
                         k = 7;      // index of notes E and e
                         break;
                 }
-                for(int j = 0; j < numFrets; j++)
+                for (int j = 0; j < numFrets; j++)
                 {
                     if (k == 12)        // if the index goes out of bounds, go back to the beginning
                         k = 0;
@@ -168,9 +170,9 @@
         /// </summary>
         protected void SetTooltips()
         {
-            for(int i = 0; i < numStrings; i++)
+            for (int i = 0; i < numStrings; i++)
             {
-                for(int j = 1; j < numFrets; j++)
+                for (int j = 1; j < numFrets; j++)
                 {
                     Table_fretboard.Rows[i].Cells[j].ToolTip = notes[Table_fretboard.Rows[i].Cells[j]].Name;
                 }
@@ -182,7 +184,7 @@
         /// </summary>
         protected void SetStringLabels()
         {
-            for(int i = 0; i < numStrings; i++)
+            for (int i = 0; i < numStrings; i++)
             {
                 Control c = Table_fretboard.Rows[i].Cells[0].Controls[0];
                 if (c is LinkButton)
@@ -195,7 +197,8 @@
 
         private void LinkButton_Click(Object sender, EventArgs e)
         {
-            if (sender is LinkButton) {
+            if (sender is LinkButton)
+            {
                 Control p = (sender as LinkButton).Parent;
                 if (p is TableCell)
                 {
@@ -207,11 +210,12 @@
 
                         move++;
                         Label_stat.Text = "GOOD";
-                        if(move < goalStep)
+                        if (move < goalStep)
                             SetUpTurn();
                         else
                             showModal();
-                    } else
+                    }
+                    else
                     {
                         Label_stat.Text = "NO GOOD";
                     }
@@ -242,11 +246,12 @@
         {
             Panel1.Visible = true;
             stats.Visible = false;
-            if(currRound < 5)
+            if (currRound < 5)
             {
                 modalMessage.Text = "You finished round " + currRound;
 
-            } else
+            }
+            else
             {
                 modalMessage.Text = "You finished the level! ";
                 OK.Text = "Finish";
@@ -257,18 +262,20 @@
 
         protected void TestBtn_Click(object sender, EventArgs e)
         {
-            stats.Visible = false;
-            if(currRound < 5)
-            {
-                modalMessage.Text = "You finished round " + currRound;
+            //stats.Visible = false;
+            //if (currRound < 5)
+            //{
+            //    modalMessage.Text = "You finished round " + currRound;
 
-            } else
-            {
-                modalMessage.Text = "You finished the level! ";
-                OK.Text = "Finish";
-            }
+            //}
+            //else
+            //{
+            //    modalMessage.Text = "You finished the level! ";
+            //    OK.Text = "Finish";
+            //}
 
-            ModalPopupExtender1.Show();
+            //ModalPopupExtender1.Show();
+            showModal();
 
         }
 
@@ -276,6 +283,10 @@
         {
             ModalPopupExtender1.Hide();
             stats.Visible = true;
+
+            // Insert this achievement into User data if it's logged in
+            if (Context.User.Identity.GetUserName() != null && Context.User.Identity.IsAuthenticated)
+                UpdateAchievement(sender, e);
 
             // Check and add achievements hurr
             if (currRound.Equals(5))
@@ -286,7 +297,7 @@
         }
 
     </script>
-    
+
     <!--
         COMP4952 Project
         Author: Teah Elaschuk
@@ -299,9 +310,10 @@
         <ContentTemplate>
             <div class="container text-center">
                 <asp:Label ID="Label_title" runat="server" Text=""></asp:Label>
-                <br /><br />
+                <br />
+                <br />
                 <div class="background">
-                    <asp:Table ID="Table_fretboard" class="fretboard" runat="server" >     
+                    <asp:Table ID="Table_fretboard" class="fretboard" runat="server">
                     </asp:Table>
                 </div>
                 <br />
@@ -312,41 +324,39 @@
                             <asp:Label ID="Label_goal" runat="server" Text="Complete the level by moving around the freboard using the interval."></asp:Label>
                         </div>
                         <div id="stats" runat="server" class="col-sm-3 col-md-6 col-lg-4">
-                                <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: " ></asp:Label>
-                                <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
-                                <br />
-                                <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
-                                <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
-                                <br />
-                                <asp:Label ID="Label_tcompleted" runat="server" Text="Moves Completed: "></asp:Label>
-                                <asp:Label ID="Label_completed" runat="server" Text=""></asp:Label>
-                                <br />
-                                <asp:Label ID="Label_tmove" runat="server" Text="Current Move: "></asp:Label>
-                                <asp:Label ID="Label_move" runat="server" Text=""></asp:Label>
-                                <br />
-                                <asp:Label ID="Label_stat" runat="server" Text=""></asp:Label>
-                            </div>
-                        </div>
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup">
-                            <h4>Congratulations!</h4>
-                            <asp:Label ID="modalMessage" runat="server" Text="You finished this round!"></asp:Label>
+                            <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: "></asp:Label>
+                            <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
                             <br />
-                            <!-- Test to go to next round -->
-                            <asp:Button ID="OK" runat="server" class="btn btn-primary" Text="Go to Next Round" OnClick="OK_Click"   />
-                            <asp:HiddenField ID="hdnField" runat="server" />
-                        </asp:Panel>
-                        <ajaxToolkit:ModalPopupExtender ID="ModalPopupExtender1" runat="server" BackgroundCssClass="modalBackground" PopupControlID="Panel1" TargetControlID="hdnField">
-
-                        </ajaxToolkit:ModalPopupExtender>
+                            <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
+                            <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
+                            <br />
+                            <asp:Label ID="Label_tcompleted" runat="server" Text="Moves Completed: "></asp:Label>
+                            <asp:Label ID="Label_completed" runat="server" Text=""></asp:Label>
+                            <br />
+                            <asp:Label ID="Label_tmove" runat="server" Text="Current Move: "></asp:Label>
+                            <asp:Label ID="Label_move" runat="server" Text=""></asp:Label>
+                            <br />
+                            <asp:Label ID="Label_stat" runat="server" Text=""></asp:Label>
+                        </div>
                     </div>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup">
+                        <h4>Congratulations!</h4>
+                        <asp:Label ID="modalMessage" runat="server" Text="You finished this round!"></asp:Label>
+                        <br />
+                        <!-- Test to go to next round -->
+                        <asp:Button ID="OK" runat="server" class="btn btn-primary" Text="Go to Next Round" OnClick="OK_Click" />
+                        <asp:HiddenField ID="hdnField" runat="server" />
+                    </asp:Panel>
+                    <ajaxToolkit:ModalPopupExtender ID="ModalPopupExtender1" runat="server" BackgroundCssClass="modalBackground" PopupControlID="Panel1" TargetControlID="hdnField">
+                    </ajaxToolkit:ModalPopupExtender>
+                </div>
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>
-    <asp:Button runat="server" Text="Update" onClick="UpdateAchievement" />
 </asp:Content>
 
