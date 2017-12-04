@@ -60,25 +60,34 @@ a.buttonLevelSelect:hover {
 /* end section*/
 
 /* in-game page */
+
+
+.background {
+    background: url('../Icons/fb.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
 .fretboard {
-    border: solid 2px black
 }
 
-.cell_nut {
-    border-left: solid 2px black;
-    border-right: solid 2px black;
-    height: 50px;
-    background-color: beige;
-    padding-left: 10px;
-    padding-right: 10px;
+.cell {
+    padding: 0px;
+    line-height: 2;
 }
 
-.cell_fret {
-    border-left: solid 2px black;
-    border-right: solid 2px black;
-    padding: 0;
-    height: 50px;
-    background-color: white;    
+.cell a {
+    text-decoration: none;
+    display:block;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    font-size: large;
+    font-weight: 800;
+    font-family: Consolas;
+
 }
 
 body {

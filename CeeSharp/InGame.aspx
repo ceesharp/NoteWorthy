@@ -25,7 +25,7 @@
         /// <summary>
         /// Number of frets on the guitar (12, plus open notes), will expand later
         /// </summary>
-        private const int numFrets = 13;
+        private const int numFrets = 15;
 
         /// <summary>
         /// Maps the cells to the musical notes
@@ -96,7 +96,7 @@
             goalStep = rand.Next(7,13);
             Label_completed.Text = move + " / " + goalStep;
             Label_move.Text = move.ToString();
-            
+
         }
 
         /// <summary>
@@ -111,22 +111,18 @@
                 Table_fretboard.Rows.Add(new TableRow());
                 for (int j = 0; j < numFrets; j++)     // for each fret per string, create a note and assign a css class
                 {
-                    if (j == 0)  // open string, style differently
+                    Table_fretboard.Rows[i].Cells.Add(new TableCell() { CssClass = "cell" });
+                    LinkButton lb = new LinkButton
                     {
-                        Table_fretboard.Rows[i].Cells.Add(new TableCell() { CssClass = "cell_nut" });
-                    }
-                    else // regular note
-                    {
-                        Table_fretboard.Rows[i].Cells.Add(new TableCell() { CssClass = "cell_fret" });
-                        ImageButton ib = new ImageButton
-                        {
-                            ImageUrl = "~/Icons/bigstring.png",
-                            Width = new Unit("100%"),
-                            CausesValidation = false
-                        };
-                        ib.Click += ImageButton_Click;
-                        Table_fretboard.Rows[i].Cells[j].Controls.Add(ib);
-                    }
+                        //ImageUrl = "~/Icons/bigstring.png",
+                        Width = new Unit("100%"),
+                        Text = "#",
+                        CausesValidation = false
+                    };
+                    lb.Click += LinkButton_Click;
+
+                    Table_fretboard.Rows[i].Cells[j].Controls.Add(lb);
+
                 }
             }
         }
@@ -188,14 +184,19 @@
         {
             for(int i = 0; i < numStrings; i++)
             {
-                Table_fretboard.Rows[i].Cells[0].Text = notes[Table_fretboard.Rows[i].Cells[0]].Name;
+                Control c = Table_fretboard.Rows[i].Cells[0].Controls[0];
+                if (c is LinkButton)
+                {
+                    (c as LinkButton).Text = (c as LinkButton).Text = notes[Table_fretboard.Rows[i].Cells[0]].Name;
+                    (c as LinkButton).Style.Add("color", "black");
+                }
             }
         }
 
-        private void ImageButton_Click(Object sender, ImageClickEventArgs e)
+        private void LinkButton_Click(Object sender, EventArgs e)
         {
-            if (sender is ImageButton) {
-                Control p = (sender as ImageButton).Parent;
+            if (sender is LinkButton) {
+                Control p = (sender as LinkButton).Parent;
                 if (p is TableCell)
                 {
                     selected = notes[(p as TableCell)];
@@ -203,12 +204,12 @@
 
                     if (ValidateMove())
                     {
-                        
+
                         move++;
                         Label_stat.Text = "GOOD";
                         if(move < goalStep)
                             SetUpTurn();
-                          else
+                        else
                             showModal();
                     } else
                     {
@@ -234,7 +235,7 @@
             if (target.Name == selected.Name)
                 return true;
             return false;
-            
+
         }
 
         protected void showModal()
@@ -298,10 +299,10 @@
         <ContentTemplate>
             <div class="container text-center">
                 <asp:Label ID="Label_title" runat="server" Text=""></asp:Label>
-                <br />
-                <br />
-                <asp:Table ID="Table_fretboard" class="fretboard" runat="server" >
-                </asp:Table>
+                <br /><br />
+                <div class="background">
+                    <asp:Table ID="Table_fretboard" class="fretboard" runat="server" >     
+                    </asp:Table>
                 </div>
                 <br />
                 <br />
@@ -311,40 +312,39 @@
                             <asp:Label ID="Label_goal" runat="server" Text="Complete the level by moving around the freboard using the interval."></asp:Label>
                         </div>
                         <div id="stats" runat="server" class="col-sm-3 col-md-6 col-lg-4">
-                            <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: " ></asp:Label>
-                            <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
-                            <br />
-                            <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
-                            <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
-                            <br />
-                            <asp:Label ID="Label_tcompleted" runat="server" Text="Moves Completed: "></asp:Label>
-                            <asp:Label ID="Label_completed" runat="server" Text=""></asp:Label>
-                            <br />
-                            <asp:Label ID="Label_tmove" runat="server" Text="Current Move: "></asp:Label>
-                            <asp:Label ID="Label_move" runat="server" Text=""></asp:Label>
-                            <br />
-                            <asp:Label ID="Label_stat" runat="server" Text=""></asp:Label>
+                                <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: " ></asp:Label>
+                                <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
+                                <br />
+                                <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
+                                <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
+                                <br />
+                                <asp:Label ID="Label_tcompleted" runat="server" Text="Moves Completed: "></asp:Label>
+                                <asp:Label ID="Label_completed" runat="server" Text=""></asp:Label>
+                                <br />
+                                <asp:Label ID="Label_tmove" runat="server" Text="Current Move: "></asp:Label>
+                                <asp:Label ID="Label_move" runat="server" Text=""></asp:Label>
+                                <br />
+                                <asp:Label ID="Label_stat" runat="server" Text=""></asp:Label>
+                            </div>
                         </div>
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup">
-                        <h4>Congratulations!</h4>
-                        <asp:Label ID="modalMessage" runat="server" Text="You finished this round!"></asp:Label>
                         <br />
-                        <!-- Test to go to next round -->
-                        <asp:Button ID="OK" runat="server" class="btn btn-primary" Text="Go to Next Round" OnClick="OK_Click"   />
-                        <asp:HiddenField ID="hdnField" runat="server" />
-                    </asp:Panel>
-                    <ajaxToolkit:ModalPopupExtender ID="ModalPopupExtender1" runat="server" BackgroundCssClass="modalBackground" PopupControlID="Panel1" TargetControlID="hdnField">
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup">
+                            <h4>Congratulations!</h4>
+                            <asp:Label ID="modalMessage" runat="server" Text="You finished this round!"></asp:Label>
+                            <br />
+                            <!-- Test to go to next round -->
+                            <asp:Button ID="OK" runat="server" class="btn btn-primary" Text="Go to Next Round" OnClick="OK_Click"   />
+                            <asp:HiddenField ID="hdnField" runat="server" />
+                        </asp:Panel>
+                        <ajaxToolkit:ModalPopupExtender ID="ModalPopupExtender1" runat="server" BackgroundCssClass="modalBackground" PopupControlID="Panel1" TargetControlID="hdnField">
 
-                    </ajaxToolkit:ModalPopupExtender>
-                </div>
+                        </ajaxToolkit:ModalPopupExtender>
+                    </div>
             </div>
-          </div>
         </ContentTemplate>
     </asp:UpdatePanel>
     <asp:Button runat="server" Text="Update" onClick="UpdateAchievement" />
