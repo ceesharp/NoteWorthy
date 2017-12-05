@@ -96,9 +96,8 @@
             if (goalStep > 40)
                 goalStep = rand.Next(5, 9);
             else if (goalStep > 15)
-                goalStep = rand.Next(7, 12);
-
-            goalStep = 2;
+                goalStep = rand.Next(6, 10);
+            
             Label_completed.Text = move + " / " + goalStep;
 
             SetUpTurn();
