@@ -39,25 +39,50 @@ namespace CeeSharp
         /// </summary>
         private void SetUpIcons()
         {
+            int count = 0;
+            HtmlGenericControl liHead = new HtmlGenericControl("li");
+            liHead.Attributes["class"] = "list-inline";
+
             for (int i = 0; i < AchievementsNumber; i++)
             {
-                HtmlGenericControl li = new HtmlGenericControl("li");
-                HtmlGenericControl img = new HtmlGenericControl("img");
-                img.Attributes["runat"] = "server";
-                img.Attributes["src"] = "Icons/002-success.png";
-                img.Attributes["height"] = 75.ToString();
-                img.Attributes["data-placement"] = "top";
-                img.Attributes["data-toggle"] = "popover";
-                img.Attributes["data-trigger"] = "hover";
-                img.Attributes["title"] = "Level " + (i + 1) + "!";
-                img.Attributes["data-content"] = "Finished level " + (i + 1);
+                if (i < AchievementsNumber)
+                {
+                    HtmlGenericControl img = new HtmlGenericControl("img");
+                    img.Attributes["runat"] = "server";
+                    img.Attributes["src"] = "Icons/002-success.png";
+                    img.Attributes["height"] = 75.ToString();
+                    img.Attributes["data-placement"] = "top";
+                    img.Attributes["data-toggle"] = "popover";
+                    img.Attributes["data-trigger"] = "hover";
+                    img.Attributes["title"] = "Level\t" + (i + 1) + "!";
+                    img.Attributes["data-content"] = "Finished level " + (i + 1);
+                    img.InnerText = "\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0";
+                    imgs.Add(img);
 
-                imgs.Add(img);
-                li.Controls.Add(img);
-                if (imgList != null)
-                    imgList.Controls.Add(li);
+                    liHead.Controls.Add(img);
+
+                    if ((i + 1) % 4 == 0)
+                        if (imgList != null)
+                            imgList.Controls.Add(liHead);
+                }
+
+
+                if (((i + 1) % 4 == 0))
+                {
+                    HtmlGenericControl text = new HtmlGenericControl("li");
+                    text.Attributes["class"] = "list-inline";
+                    for (int j = (++count % 2 != 0) ? (((i + 1) / 2) + (2 * (int)Math.Pow(-1, (count - 1) == 0 ? count : count - 1))) : ((i + 1) / 2); j < (i + 1); j++)
+                        text.InnerText += ((j < 10) ? "\u00a0\u00a0\u00a0Level\u00a0\u00a0\u00a0\u00a0" : "\u00a0\u00a0Level\u00a0\u00a0")
+                                       + (j + 1)
+                                       + ((j < 10) ? "\u00a0!\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" : "!\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0");
+
+                    liHead.Controls.Add(text);
+                    if (imgList != null)
+                        imgList.Controls.Add(liHead);
+                }
             }
         }
+
 
         /// <summary>
         /// Initialize achievement dictionary.
@@ -119,7 +144,7 @@ namespace CeeSharp
             {
                 if (trophy.Value.Equals(true))
                 {
-                    imgs[trophy.Key-1].Attributes["src"] = "Icons/yay.png";
+                    imgs[trophy.Key - 1].Attributes["src"] = "Icons/yay.png";
                     //switch (trophy.Key)
                     //{
                     //    case 1:

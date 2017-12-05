@@ -124,5 +124,10 @@ namespace CeeSharp.Account
 
             Response.Redirect("/Account/Manage");
         }
+
+        protected void ChangePasswordImage_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("/Account/ManagePassword");
+        }
     }
 }
