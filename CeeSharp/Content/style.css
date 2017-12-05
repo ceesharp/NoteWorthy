@@ -61,6 +61,23 @@ a.buttonLevelSelect:hover {
 
 /* in-game page */
 
+.modalBackground {
+    background-color: black;
+    filter: alpha(opacity=90);
+    opacity: 0.8;
+}
+
+.modalPopup {
+    background-color: #ffffff;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    padding-top: 10px;
+    padding-left: 10px;
+    width: 300px;
+    height: 140px;
+}
+
 
 .background {
     background: url('../Icons/fb.png');
@@ -111,4 +128,7 @@ body {
     background: -ms-linear-gradient(271deg, rgba(224,207,255,1) 26%, rgba(224,207,255,1) 27%, rgba(175,240,229,1) 76%); /* ie10+ */
     background: linear-gradient(179deg, rgba(224,207,255,1) 26%, rgba(224,207,255,1) 27%, rgba(175,240,229,1) 76%); /* w3c */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E0CFFF', endColorstr='#AFF0E5',GradientType=0 ); /* ie6-9 */
+    background-attachment:fixed;
+    width: 100%;
+    height: 100%;
 }

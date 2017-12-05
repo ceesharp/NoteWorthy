@@ -3,24 +3,7 @@
 <%@ Import Namespace="CeeSharp" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <style>
-        .modalBackground {
-            background-color: black;
-            filter: alpha(opacity=90);
-            opacity: 0.8;
-        }
-
-        .modalPopup {
-            background-color: #ffffff;
-            border-width: 3px;
-            border-style: solid;
-            border-color: black;
-            padding-top: 10px;
-            padding-left: 10px;
-            width: 300px;
-            height: 140px;
-        }
-    </style>
+    
     <script runat="server">
         private const int numStrings = 6;
 
