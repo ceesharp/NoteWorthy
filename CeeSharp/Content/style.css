@@ -175,3 +175,10 @@ body {
     border-radius: 20px;
     line-height: 2;
 }
+
+/* Account page */
+
+.service-list {
+    text-align: center;
+    font-size: 1em;
+}
