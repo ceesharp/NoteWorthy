@@ -61,6 +61,23 @@ a.buttonLevelSelect:hover {
 
 /* in-game page */
 
+.modalBackground {
+    background-color: black;
+    filter: alpha(opacity=90);
+    opacity: 0.8;
+}
+
+.modalPopup {
+    background-color: #ffffff;
+    border-width: 3px;
+    border-style: solid;
+    border-color: black;
+    padding-top: 10px;
+    padding-left: 10px;
+    width: 300px;
+    height: 140px;
+}
+
 
 .background {
     background: url('../Icons/fb.png');
@@ -69,15 +86,12 @@ a.buttonLevelSelect:hover {
     background-size: 100% 100%;
 }
 
-.fretboard {
-}
-
-.cell {
+.cell, .selected {
     padding: 0px;
     line-height: 2;
 }
 
-.cell a {
+.cell a, .selected a {
     text-decoration: none;
     display:block;
     margin: 0;
@@ -87,11 +101,25 @@ a.buttonLevelSelect:hover {
     font-size: large;
     font-weight: 800;
     font-family: Consolas;
-
 }
 
-body {
-   
+.cell a:hover {  
+    max-width: 35px;
+    border-radius: 35px;
+    background-color: rgba(243,255,150,0.74);
+    -webkit-box-shadow: 0px 0px 18px 4px rgba(243,255,150,0.74);
+    -moz-box-shadow: 0px 0px 18px 4px rgba(243,255,150,0.74);
+    box-shadow: 0px 0px 18px 4px rgba(243,255,150,0.74);
+}
+
+.selected a {
+    max-width: 35px;
+    border-radius: 35px;
+    background-color: rgba(163,64,255,0.74);
+}
+
+
+body {   
     /* generated from http://angrytools.com/gradient/ */
     background: -moz-linear-gradient(271deg, rgba(224,207,255,1) 26%, rgba(224,207,255,1) 27%, rgba(175,240,229,1) 76%); /* ff3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(26%, rgba(224,207,255,1)), color-stop(27%, rgba(224,207,255,1)), color-stop(76%, rgba(175,240,229,1))); /* safari4+,chrome */
@@ -100,4 +128,7 @@ body {
     background: -ms-linear-gradient(271deg, rgba(224,207,255,1) 26%, rgba(224,207,255,1) 27%, rgba(175,240,229,1) 76%); /* ie10+ */
     background: linear-gradient(179deg, rgba(224,207,255,1) 26%, rgba(224,207,255,1) 27%, rgba(175,240,229,1) 76%); /* w3c */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E0CFFF', endColorstr='#AFF0E5',GradientType=0 ); /* ie6-9 */
+    background-attachment:fixed;
+    width: 100%;
+    height: 100%;
 }

@@ -3,24 +3,7 @@
 <%@ Import Namespace="CeeSharp" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <style>
-        .modalBackground {
-            background-color: black;
-            filter: alpha(opacity=90);
-            opacity: 0.8;
-        }
-
-        .modalPopup {
-            background-color: #ffffff;
-            border-width: 3px;
-            border-style: solid;
-            border-color: black;
-            padding-top: 10px;
-            padding-left: 10px;
-            width: 300px;
-            height: 140px;
-        }
-    </style>
+    
     <script runat="server">
         private const int numStrings = 6;
 
@@ -98,6 +81,13 @@
             goalStep = rand.Next(7, 13);
             Label_completed.Text = move + " / " + goalStep;
             Label_move.Text = move.ToString();
+            foreach(TableRow r in Table_fretboard.Rows)
+            {
+                foreach(TableCell c in r.Cells)
+                {
+                    c.CssClass = "cell";
+                }
+            }
 
         }
 
@@ -204,10 +194,9 @@
                 {
                     selected = notes[(p as TableCell)];
 
-
                     if (ValidateMove())
                     {
-
+                        (p as TableCell).CssClass = "selected";
                         move++;
                         Label_stat.Text = "GOOD";
                         if (move < goalStep)
