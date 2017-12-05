@@ -62,8 +62,6 @@
 
             if (!IsPostBack)
             {
-                selected = previous = NotesProvider.F;
-                SetUpTurn();
                 currRound = 1;
                 newGame();
             }
@@ -77,18 +75,40 @@
 
         protected void newGame()
         {
-            move = 0;
-            goalStep = rand.Next(7, 13);
-            Label_completed.Text = move + " / " + goalStep;
-            Label_move.Text = move.ToString();
-            foreach(TableRow r in Table_fretboard.Rows)
-            {
+            // reset selected frets
+            foreach (TableRow r in Table_fretboard.Rows)
                 foreach(TableCell c in r.Cells)
-                {
                     c.CssClass = "cell";
-                }
+
+            // get starting point
+            int startFret = rand.Next(numFrets);
+            int startString = rand.Next(2)+4;           // best to start on the 5th and 6th strings (A and E)
+            Table_fretboard.Rows[startString].Cells[startFret].CssClass = "selected";
+            selected = previous = notes[Table_fretboard.Rows[startString].Cells[startFret]];
+
+            if(currRound == 3)
+            {
+                SetUpHints();
             }
 
+            move = 0;
+            goalStep = Convert.ToInt32((startString*numFrets + numFrets - startFret) / dist); // all remaining frets divided by the distance
+            if (goalStep > 40)
+                goalStep = rand.Next(5, 9);
+            else if (goalStep > 15)
+                goalStep = rand.Next(7, 12);
+
+            goalStep = 2;
+            Label_completed.Text = move + " / " + goalStep;
+
+            SetUpTurn();
+        }
+        
+        private void SetUpHints()
+        {
+            // hide the target message
+            Label_target.Visible = false;
+            Label_ttarget.Visible = false;            
         }
 
         /// <summary>
@@ -198,15 +218,10 @@
                     {
                         (p as TableCell).CssClass = "selected";
                         move++;
-                        Label_stat.Text = "GOOD";
                         if (move < goalStep)
                             SetUpTurn();
                         else
                             showModal();
-                    }
-                    else
-                    {
-                        Label_stat.Text = "NO GOOD";
                     }
                 }
             }
@@ -216,11 +231,11 @@
         {
             previous = selected;
             target = NotesProvider.GetTarget(previous, dist);
-            System.Diagnostics.Debug.WriteLine("in setupturn: " + target.Name);
             Label_previous.Text = previous.Name;
             Label_target.Text = target.Name;
             Label_completed.Text = move + " / " + goalStep;
-            Label_move.Text = move.ToString();
+
+            // come back here
         }
 
         private bool ValidateMove()
@@ -237,7 +252,11 @@
             stats.Visible = false;
             if (currRound < 5)
             {
-                modalMessage.Text = "You finished round " + currRound;
+                modalMessage.Text = "You finished round " + currRound + "!";
+                if (currRound == 2)
+                    modalMessage.Text +=  " This time, start thinking about the distances between intervals.";
+                if (currRound == 3)
+                    modalMessage.Text +=  " Now, try and determine the target yourself.";
 
             }
             else
@@ -272,7 +291,7 @@
         {
             ModalPopupExtender1.Hide();
             stats.Visible = true;
-            
+
             // Check and add achievements hurr
             if (currRound.Equals(5))
             {
@@ -308,25 +327,24 @@
                 </div>
                 <br />
                 <br />
-                <div class="container">
+                <div class="container game-labels">
                     <div class="row">
-                        <div class="col-sm-9 col-md-6 col-lg-8">
+                        <div class="col-sm-9 col-md-6 col-lg-8 message">
                             <asp:Label ID="Label_goal" runat="server" Text="Complete the level by moving around the freboard using the interval."></asp:Label>
                         </div>
                         <div id="stats" runat="server" class="col-sm-3 col-md-6 col-lg-4">
-                            <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: "></asp:Label>
-                            <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
+                            <div class="stats-feature">    
+                                <asp:Label ID="Label_tcompleted" runat="server" Text="Moves Completed: "></asp:Label>
+                                <asp:Label ID="Label_completed" runat="server" Text=""></asp:Label>
+                            </div>
                             <br />
-                            <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
-                            <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
-                            <br />
-                            <asp:Label ID="Label_tcompleted" runat="server" Text="Moves Completed: "></asp:Label>
-                            <asp:Label ID="Label_completed" runat="server" Text=""></asp:Label>
-                            <br />
-                            <asp:Label ID="Label_tmove" runat="server" Text="Current Move: "></asp:Label>
-                            <asp:Label ID="Label_move" runat="server" Text=""></asp:Label>
-                            <br />
-                            <asp:Label ID="Label_stat" runat="server" Text=""></asp:Label>
+                            <div class="stats">    
+                                <asp:Label ID="Label_tprevious" runat="server" Text="Current Note: "></asp:Label>
+                                <asp:Label ID="Label_previous" runat="server" Text=""></asp:Label>
+                                    <br />
+                                <asp:Label ID="Label_ttarget" runat="server" Text="Target: "></asp:Label>
+                                <asp:Label ID="Label_target" runat="server" Text=""></asp:Label>
+                            </div>
                         </div>
                     </div>
                     <br />
