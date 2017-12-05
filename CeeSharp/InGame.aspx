@@ -96,6 +96,13 @@
             goalStep = rand.Next(7,13);
             Label_completed.Text = move + " / " + goalStep;
             Label_move.Text = move.ToString();
+            foreach(TableRow r in Table_fretboard.Rows)
+            {
+                foreach(TableCell c in r.Cells)
+                {
+                    c.CssClass = "cell";
+                }
+            }
 
         }
 
@@ -201,10 +208,9 @@
                 {
                     selected = notes[(p as TableCell)];
 
-
                     if (ValidateMove())
                     {
-
+                        (p as TableCell).CssClass = "selected";
                         move++;
                         Label_stat.Text = "GOOD";
                         if(move < goalStep)
