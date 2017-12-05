@@ -26,7 +26,10 @@
         private static int goalStep;
         private Random rand;
 
-
+        private static String[] LevelNames = {"Minor Seconds", "Major Seconds", "Minor Thirds",
+            "Major Thirds", "Perfect Fourths", "Minor Fifths", "Perfect Fifths", "Minor Sixths",
+            "Major Sixths", "Minor Sevenths", "Major Sevenths", "Octaves"};
+        private string LevelName;
         /// <summary>
         /// Gets the game level info passed via query strings from the game selection page,
         /// or goes back if the values are not defined.
@@ -43,12 +46,9 @@
             {
                 Response.Redirect("~/Game.aspx");
             }
-
+            LevelName = LevelNames[Convert.ToInt32(Request.QueryString["Dist"]) - 1];
             // extract the level information and display it at the top of the page
-            Label_title.Text = "<h1>"
-                + Request.QueryString["GameType"].ToString()
-                + ": " + Request.QueryString["Dist"].ToString()
-                + "</h1>";
+            Label_title.Text = "<h1>" + LevelName + "</h1>";
 
             // init UI
             InitFretboard();
@@ -94,20 +94,24 @@
             move = 0;
             goalStep = Convert.ToInt32((startString*numFrets + numFrets - startFret) / dist); // all remaining frets divided by the distance
             if (goalStep > 40)
-                goalStep = rand.Next(5, 9);
-            else if (goalStep > 15)
-                goalStep = rand.Next(6, 10);
+                goalStep = rand.Next(6, 12);
+            else if (goalStep > 12)
+                goalStep = rand.Next(5, 8);
             
             Label_completed.Text = move + " / " + goalStep;
 
             SetUpTurn();
         }
-        
+
         private void SetUpHints()
         {
             // hide the target message
             Label_target.Visible = false;
-            Label_ttarget.Visible = false;            
+            Label_ttarget.Visible = false;
+
+            // change goal message
+            Label_goal.Text = "Hint: The distance between " + LevelName + " is " 
+                + dist + " semitones.";
         }
 
         /// <summary>
