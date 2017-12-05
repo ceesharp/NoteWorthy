@@ -89,6 +89,23 @@ namespace App.Extensions
             var claim = ((ClaimsIdentity)identity).FindFirst("NickName");
             return (claim != null) ? claim.Value : string.Empty;
         }
+
+
+        public static void UpdateClaim(this IIdentity identity, string key, string value)
+        {
+            if (((ClaimsIdentity)identity) == null)
+                return;
+
+            // Check for existing claim and remove it
+            var claim = ((ClaimsIdentity)identity).FindFirst(key);
+            if (claim != null)
+                ((ClaimsIdentity)identity).RemoveClaim(claim);
+
+            // Add the new claim
+            ((ClaimsIdentity)identity).AddClaim(new Claim(key, value));
+            var authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
+            authenticationManager.AuthenticationResponseGrant = new AuthenticationResponseGrant(new ClaimsIdentity(identity), new AuthenticationProperties() { IsPersistent = true });
+        }
     }
 }
 

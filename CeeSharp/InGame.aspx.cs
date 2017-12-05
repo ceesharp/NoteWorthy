@@ -28,6 +28,7 @@ namespace CeeSharp
         /// Author: Ebon
         /// Modified By:
         /// Name: Ebon    Change: regex expression     Date: 2017-12-03
+        ///               Change: update claim         Date: 2017-12-04
         /// 
         /// Update uer's Achievement data
         ///     Insert the new data if the data doesn't exist.
@@ -43,6 +44,7 @@ namespace CeeSharp
                 {
                     user.Achievement += Request.QueryString["Dist"].ToString() + ",";
                     manager.Update(user);
+                    Context.User.Identity.UpdateClaim("Achievement", user.Achievement);
                 }
 
             }
