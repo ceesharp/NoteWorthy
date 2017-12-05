@@ -18,7 +18,7 @@
                         <br />
                         <br />
                         <br />
-                        <ul ID="imgList" class="list-inline" runat="server">
+                        <ul ID="imgList" runat="server">
                             <%--<li><img title="Sampler Plate" data-placement="top" data-toggle="popover" data-trigger="hover" data-content="Finished Interval level with no error" runat="server" id="img1" src="Icons/002-success.png" height="75" /></li>
                             <li><img data-placement="top" data-toggle="popover" data-trigger="hover" title="Sampler Plate Advanced" data-content="Finished Arpeggios level with no error" runat="server" id="img2" src="Icons/002-success.png" height="75" /></li>
                             <li><img data-placement="top" data-toggle="popover" data-trigger="hover" title="Trooper" data-content="Complete a tutorial lesson" runat="server" id="img3" src="Icons/002-success.png" height="75" /></li>

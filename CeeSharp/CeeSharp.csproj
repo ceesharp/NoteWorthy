@@ -229,6 +229,7 @@
     <Content Include="Icons\003-profile.png" />
     <Content Include="Icons\004-info.png" />
     <Content Include="Icons\bigstring.png" />
+    <Content Include="Icons\ChangePassword.png" />
     <Content Include="Icons\fb.png" />
     <Content Include="Icons\game.gif" />
     <Content Include="Icons\nut.png" />

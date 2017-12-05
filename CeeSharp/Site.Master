@@ -91,7 +91,7 @@
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
                 
             </asp:ContentPlaceHolder>
-            <hr />
+            <%--<hr />--%>
             <!-- If we want to add a footer :)
             <div class="footer navbar-fixed-bottom text-center">
                 <ul class="nav navbar-nav">
