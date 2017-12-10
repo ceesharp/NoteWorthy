@@ -54,6 +54,14 @@ namespace CeeSharp.Models
 
 namespace App.Extensions
 {
+    /// <summary>
+    /// Author: Ebon
+    /// Modified By:
+    /// Name: Ebon    Change: Add update claim     Date: 2017-11-17
+    /// 
+    /// Retrieve and update client side user data
+    ///     Insert the new data if the data doesn't exist.
+    /// </summary>
     public static class IdentityExtensions
     {
         /// <summary>
@@ -90,7 +98,12 @@ namespace App.Extensions
             return (claim != null) ? claim.Value : string.Empty;
         }
 
-
+        /// <summary>
+        /// Update client side claim data
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <param name="key">Target Claim</param>
+        /// <param name="value">New Value</param>
         public static void UpdateClaim(this IIdentity identity, string key, string value)
         {
             if (((ClaimsIdentity)identity) == null)
