@@ -4,11 +4,19 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     
+    <!--
+        InGame page
+        This file contains the client-side and server-side code for the in-game page.
+    -->
     <script runat="server">
+
+        /// <summary>
+        /// Number of strings on the guitar
+        /// </summary>
         private const int numStrings = 6;
 
         /// <summary>
-        /// Number of frets on the guitar (12, plus open notes), will expand later
+        /// Number of frets on the guitar (14, plus open notes)
         /// </summary>
         private const int numFrets = 15;
 
@@ -17,29 +25,38 @@
         /// </summary>
         private Dictionary<TableCell, Note> notes;
 
-        private Note previous;
-        private Note selected;
-        private Note target;
-        private int dist;
-        private static int currRound = 1;
-        private static int move;
-        private static int goalStep;
-        private Random rand;
+        private Note previous;              // the last correct note, and current interval base
+        private Note selected;              // the note that the user selects - may or may not be correct
+        private Note target;                // the next interval from the previous note. this is considered the correct answer
+        private int dist;                   // the distance in semitones unique to the game level (can be 1 to 12)
+        private static int currRound = 1;   // the initial value for the number of rounds. A game has 5 rounds.
+        private static int move;            // the current move for the round. reaching the goalStep completes a round.
+        private static int goalStep;        // the number of moves required to complete a round
+        private Random rand;                // a random object used to find the starting note and goalstep
 
+        /// <summary>
+        /// List of all the formal level names.
+        /// </summary>
         private static String[] LevelNames = {"Minor Seconds", "Major Seconds", "Minor Thirds",
             "Major Thirds", "Perfect Fourths", "Minor Fifths", "Perfect Fifths", "Minor Sixths",
             "Major Sixths", "Minor Sevenths", "Major Sevenths", "Octaves"};
-        private string LevelName;
+
         /// <summary>
+        ///  Stores the formal level name.
+        /// </summary>
+        private string LevelName;
+
+        /// <summary>
+        /// Author: Teah Elaschuk
+        /// 
         /// Gets the game level info passed via query strings from the game selection page,
         /// or goes back if the values are not defined.
-        /// Initializes the fretboard
+        /// Initializes the fretboard, sets up the game, and begins the first round.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected void Page_Load(object sender, EventArgs e)
         {
-
             // no level information, go back
             if (Request.QueryString["GameType"] == null
                 || Request.QueryString["Dist"] == null)
@@ -73,6 +90,13 @@
 
         }
 
+        /// <summary>
+        /// Author: Lancelei Herradura
+        /// 
+        /// Sets up a new game after a round is completed. 
+        /// Modified By:
+        /// Name: Teah    Change: made game more difficult after the 2nd round, found number of moves per round
+        /// </summary>
         protected void newGame()
         {
             // reset selected frets
@@ -86,11 +110,13 @@
             Table_fretboard.Rows[startString].Cells[startFret].CssClass = "selected";
             selected = previous = notes[Table_fretboard.Rows[startString].Cells[startFret]];
 
+            // after a certain point in the game, make the rounds more difficult
             if(currRound == 3)
             {
                 SetUpHints();
             }
-
+            
+            // logic for finding a reasonable number of steps for the starting point
             move = 0;
             goalStep = Convert.ToInt32((startString*numFrets + numFrets - startFret) / dist); // all remaining frets divided by the distance
             if (goalStep > 40)
@@ -103,6 +129,11 @@
             SetUpTurn();
         }
 
+        /// <summary>
+        /// Author: Teah Elaschuk
+        /// 
+        /// Disables the target display and displays a hint instead, making the game more difficult.
+        /// </summary>
         private void SetUpHints()
         {
             // hide the target message
@@ -115,6 +146,7 @@
         }
 
         /// <summary>
+        /// Author: Teah Elaschuk
         /// Creates a mock guitar fretboard using table, tablerow, and tablecell controls.
         /// </summary>
         protected void InitFretboard()
@@ -129,20 +161,18 @@
                     Table_fretboard.Rows[i].Cells.Add(new TableCell() { CssClass = "cell" });
                     LinkButton lb = new LinkButton
                     {
-                        //ImageUrl = "~/Icons/bigstring.png",
                         Width = new Unit("100%"),
                         Text = "#",
                         CausesValidation = false
                     };
                     lb.Click += LinkButton_Click;
-
                     Table_fretboard.Rows[i].Cells[j].Controls.Add(lb);
-
                 }
             }
         }
 
         /// <summary>
+        /// Author: Teah Elaschuk
         /// Sets values for each note
         /// </summary>
         protected void InitValues()
@@ -179,6 +209,7 @@
         }
 
         /// <summary>
+        /// Author: Teah Elaschuk
         /// Sets hover tags for the notes
         /// </summary>
         protected void SetTooltips()
@@ -193,6 +224,7 @@
         }
 
         /// <summary>
+        /// Author: Teah Elaschuk
         /// Sets the string names in the first column (open notes)
         /// </summary>
         protected void SetStringLabels()
@@ -208,6 +240,16 @@
             }
         }
 
+        /// <summary>
+        /// Author: Teah Elaschuk
+        /// When a note on the fretboard is selected, the user's choice is recorded and validated.
+        /// If the answer is correct, the next round is set up
+        /// 
+        /// Modified By:
+        /// Name: Lancelei    Change: ends the round if all moves are completed and sets up another turn otherwise
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LinkButton_Click(Object sender, EventArgs e)
         {
             if (sender is LinkButton)
@@ -230,6 +272,10 @@
             }
         }
 
+        /// <summary>
+        /// Author: Teah Elaschuk, Lancelei Herradura
+        /// Before a user can select a note, the fretboard must find the next target and update the data. 
+        /// </summary>
         private void SetUpTurn()
         {
             previous = selected;
@@ -237,10 +283,14 @@
             Label_previous.Text = previous.Name;
             Label_target.Text = target.Name;
             Label_completed.Text = move + " / " + goalStep;
-
-            // come back here
         }
 
+        /// <summary>
+        /// Author: Teah Elaschuk
+        /// 
+        /// Checks if the user's selection was correct.
+        /// </summary>
+        /// <returns></returns>
         private bool ValidateMove()
         {
             if (target.Name == selected.Name)
@@ -249,6 +299,10 @@
 
         }
 
+        /// <summary>
+        /// Author: Lancelei Herradura
+        /// 
+        /// </summary>
         protected void showModal()
         {
             Panel1.Visible = true;
@@ -290,6 +344,11 @@
 
         }
 
+        /// <summary>
+        /// Author: Lancelei Herradura
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void OK_Click(object sender, EventArgs e)
         {
             ModalPopupExtender1.Hide();
@@ -311,12 +370,8 @@
     </script>
 
     <!--
-        COMP4952 Project
-        Author: Teah Elaschuk
-
-        InGame page: Work in progress
-        displays the game type and level at the moment
-        Update: Lancelei Herradura  Change: Added updatepanel
+        Displays the game level, the fretboard, and a panel with game information.
+        Modified By: Lancelei Herradura  Change: Added updatepanel
     -->
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <ContentTemplate>
