@@ -71,10 +71,7 @@ namespace CeeSharp
                 {
                     HtmlGenericControl text = new HtmlGenericControl("li");
                     text.Attributes["class"] = "list-inline";
-                    for (int j = (++count % 2 != 0) ? (((i + 1) / 2) + (2 * (int)Math.Pow(-1, (count - 1) == 0 ? count : count - 1))) : ((i + 1) / 2); j < (i + 1); j++)
-                        text.InnerText += ((j < 10) ? "\u00a0\u00a0\u00a0Level\u00a0\u00a0\u00a0\u00a0" : "\u00a0\u00a0Level\u00a0\u00a0")
-                                       + (j + 1)
-                                       + ((j < 10) ? "\u00a0!\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" : "!\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0");
+                    for (int j = (++count % 2 != 0) ? (((i + 1) / 2) + (2 * (int)Math.Pow(-1, (count - 1) == 0 ? count : count - 1))) : ((i + 1) / 2); j < (i + 1); text.InnerText += ((j < 10) ? "\u00a0\u00a0\u00a0Level\u00a0\u00a0\u00a0\u00a0" : "\u00a0\u00a0Level\u00a0\u00a0") + (j++ + 1) + ((j < 10) ? "\u00a0!\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0" : "!\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0")) ;
 
                     liHead.Controls.Add(text);
                     if (imgList != null)
@@ -112,6 +109,10 @@ namespace CeeSharp
         /// <param name="trophies">User Achievement String</param>
         private void retrieveTrophies(string trophies)
         {
+            foreach (string num in trophies.Split(','))
+                if (num != string.Empty && num != "0")
+                    achievements[Int32.Parse(num)] = true;
+
             //Debug.WriteLine("INSIDE ACHIEVEMENTS");
             //string check = string.Empty;
             //int id = 0;
@@ -129,10 +130,6 @@ namespace CeeSharp
             //        id = 0;
             //    }
             //}
-
-            foreach (string num in trophies.Split(','))
-                if (num != string.Empty && num != "0")
-                    achievements[Int32.Parse(num)] = true;
         }
 
         /// <summary>
