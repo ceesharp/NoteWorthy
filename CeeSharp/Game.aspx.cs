@@ -15,7 +15,7 @@ namespace CeeSharp
     /// </summary>
     public partial class Game : System.Web.UI.Page
     {
-        private const int INTERVAL_PREFIX = 4;      // used to cut the linkButton_ suffix from the IDs of the interval selection buttons
+        private const int INTERVAL_PREFIX = 4;      // used to cut the lbtn_ suffix from the IDs of the interval selection buttons
         private const int ARPEGGIO_SUFFIX = 12;     // used to cut the linkButton_arp_ suffix
 
         protected void Page_Load(object sender, EventArgs e)
@@ -23,8 +23,7 @@ namespace CeeSharp
         }
 
         /// <summary>
-        /// Called when an interval level is clicked. Passes 2 pieces of information: the game type (interval), and the
-        /// level.
+        /// Called when an interval level is clicked. Passes 2 pieces of information: the game type (interval), and the interval distance
         /// </summary>
         /// <param name="sender">The button pressed</param>
         /// <param name="e"></param>
@@ -41,6 +40,7 @@ namespace CeeSharp
         /// <summary>
         /// Called when an arpeggio level is clicked. Passes 2 pieces of information: the game type (arpeggio), and the
         /// level.
+        /// These buttons are disabled, and may be completed in later versions of the web app.
         /// </summary>
         /// <param name="sender">The button pressed</param>
         /// <param name="e"></param>
